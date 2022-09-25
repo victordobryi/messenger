@@ -19,34 +19,26 @@ export const getUsers = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const isUser = () => async (dispatch: AppDispatch) => {
-  const id = localStorage.getItem('id');
-  if (id) {
-    try {
-      const user = (await UserService.getUser(id)).data;
-      if (user) {
-        null;
-      } else {
-        dispatch(userLogout());
-      }
-    } catch (error) {
-      dispatch(userLogout());
-    }
-  } else {
-    null;
-  }
-};
-
 export const userLogin =
   (username: string) => async (dispatch: AppDispatch) => {
     try {
       dispatch(authSlice.actions.setLoading(true));
-      const newUser = (await UserService.addUser({ username })).data;
       const response = await UserService.getUsers();
-      localStorage.setItem('auth', 'true');
-      dispatch(authSlice.actions.setUser(newUser));
-      dispatch(authSlice.actions.setUsers(response.data));
-      dispatch(authSlice.actions.setAuth(true));
+      const isLoginUser = response.data.find(
+        (user) => user.username === username
+      );
+      if (isLoginUser && !isLoginUser.online) {
+        dispatch(authSlice.actions.setUser(isLoginUser));
+        dispatch(authSlice.actions.setUsers(response.data));
+        dispatch(authSlice.actions.setAuth(true));
+      } else if (!isLoginUser) {
+        const newUser = (await UserService.addUser({ username })).data;
+        dispatch(authSlice.actions.setUser(newUser));
+        dispatch(authSlice.actions.setUsers(response.data));
+        dispatch(authSlice.actions.setAuth(true));
+      } else {
+        dispatch(authSlice.actions.setError('Юзер уже авторизирован!'));
+      }
       dispatch(authSlice.actions.setLoading(false));
     } catch (e) {
       if (e instanceof Error) {
@@ -56,8 +48,6 @@ export const userLogin =
   };
 
 export const userLogout = () => async (dispatch: AppDispatch) => {
-  localStorage.removeItem('auth');
-  localStorage.removeItem('id');
   dispatch(authSlice.actions.setUser({} as IUser));
   dispatch(authSlice.actions.setAuth(false));
   dispatch(authSlice.actions.setError(''));
