@@ -33,6 +33,9 @@ const Header = () => {
             </Nav>
           ) : (
             <Nav className="ms-auto">
+              <LinkContainer to="/messages">
+                <Nav.Link eventKey={2}>All messages</Nav.Link>
+              </LinkContainer>
               <LinkContainer to="/messageForm">
                 <Nav.Link eventKey={2}>Send Message</Nav.Link>
               </LinkContainer>

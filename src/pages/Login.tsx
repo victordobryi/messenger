@@ -11,11 +11,11 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isLoading, error } = useAppSelector((state) => state.auth);
 
   const login = async (username: string) => {
     await dispatch(userLogin(username));
-    navigate('/chat');
+    navigate('/messageForm');
   };
 
   return isLoading ? (
@@ -24,8 +24,9 @@ const Login = () => {
     </Spinner>
   ) : (
     <Container>
+      <span>{error}</span>
       <Form
-        className="d-flex justify-content-center flex-column"
+        className="d-flex justify-content-center flex-column mt-3"
         onSubmit={(e) => {
           e.preventDefault();
           login(username);
