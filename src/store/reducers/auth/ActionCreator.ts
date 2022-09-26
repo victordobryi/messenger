@@ -33,7 +33,11 @@ export const userLogin =
         dispatch(authSlice.actions.setAuth(true));
       } else if (!isLoginUser) {
         const newUser = (await UserService.addUser({ username })).data;
-        dispatch(authSlice.actions.setUser(newUser));
+        const response = await UserService.getUsers();
+        const isLoginUser = response.data.find(
+          (user) => user.username === username
+        );
+        if (isLoginUser) dispatch(authSlice.actions.setUser(isLoginUser));
         dispatch(authSlice.actions.setUsers(response.data));
         dispatch(authSlice.actions.setAuth(true));
       } else {
