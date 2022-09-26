@@ -11,8 +11,7 @@ const UserMessages = () => {
   const [allMessages, setAllMessages] = useState<IMessage[]>([]);
   const { id } = useParams();
   const { user } = useAppSelector((state) => state.auth);
-  const { socket, users, uid, messages } =
-    useContext(SocketContext).SocketState;
+  const { messages } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
     const getMessages = async () => {

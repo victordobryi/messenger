@@ -39,8 +39,6 @@ const SocketContextComponent: React.FunctionComponent<PropsWithChildren> = (
   }, []);
 
   const StartListeners = () => {
-    /** Messages */
-
     socket.on('add_user', (user: string) => {
       SocketDispatch({ type: 'add_user', payload: user });
     });
@@ -54,13 +52,11 @@ const SocketContextComponent: React.FunctionComponent<PropsWithChildren> = (
       SocketDispatch({ type: 'update_users', payload: users });
     });
 
-    /** Messages */
     socket.on('user_disconnected', (uid: string) => {
       console.info('User disconnected message received');
       SocketDispatch({ type: 'remove_user', payload: uid });
     });
 
-    /** Connection / reconnection listeners */
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
       SendHandshake();

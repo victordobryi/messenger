@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { Socket } from 'socket.io-client';
+import UserService from '../API/UserService';
 
 export interface ISocketContextState {
   socket: Socket | undefined;
@@ -22,7 +23,7 @@ export type TSocketContextActions =
   | 'remove_user'
   | 'add_user'
   | 'add_message';
-export type TSocketContextPayload = string | string[] | Socket;
+export type TSocketContextPayload = string | string[] | Socket | number;
 
 export interface ISocketContextActions {
   type: TSocketContextActions;

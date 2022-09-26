@@ -28,15 +28,13 @@ export const userLogin =
       const isLoginUser = response.data.find(
         (user) => user.username === username
       );
-      if (isLoginUser && !isLoginUser.online) {
+      if (isLoginUser) {
         dispatch(authSlice.actions.setUser(isLoginUser));
         dispatch(authSlice.actions.setUsers(response.data));
         dispatch(authSlice.actions.setAuth(true));
         socket.emit('add_NewUser', JSON.stringify(isLoginUser));
       } else if (!isLoginUser) {
-        const newUser = (
-          await UserService.addUser({ username, socketId: socket.id })
-        ).data;
+        (await UserService.addUser({ username, socketId: socket.id })).data;
         const response = await UserService.getUsers();
         const isLoginUser = response.data.find(
           (user) => user.username === username
@@ -58,9 +56,7 @@ export const userLogin =
 
 export const userLogout = (id: number) => async (dispatch: AppDispatch) => {
   const user = (await UserService.getUser(id)).data;
-  const newUser = (await UserService.updateUser({ ...user, online: false }, id))
-    .data;
-  console.log(newUser);
+  (await UserService.updateUser({ ...user, online: false }, id)).data;
   dispatch(authSlice.actions.setUser({} as IUser));
   dispatch(authSlice.actions.setAuth(false));
   dispatch(authSlice.actions.setError(''));

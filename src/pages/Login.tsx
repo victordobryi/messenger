@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
-  const { socket, users, uid } = useContext(SocketContext).SocketState;
+  const { socket } = useContext(SocketContext).SocketState;
 
   const login = async (username: string) => {
     if (socket) {

@@ -9,8 +9,7 @@ import SocketContext from '../context/SocketContext';
 const Messages = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [allMessages, setAllMessages] = useState<IMessage[]>([]);
-  const { socket, users, uid, messages } =
-    useContext(SocketContext).SocketState;
+  const { messages } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
     const getMessages = async () => {

@@ -7,10 +7,10 @@ import UserService from '../API/UserService';
 import { useNavigate } from 'react-router-dom';
 import MessageService from '../API/MessageService';
 import { IUser } from '../models/IUser';
-import { useAppDispatch, useAppSelector } from '../redux-hooks';
+import { useAppSelector } from '../redux-hooks';
 import { getCurrentDate } from '../utils/getCurrentTime';
 import SocketContext from '../context/SocketContext';
-import { IMessage, IMessageNoId } from '../models/IMessage';
+import { IMessageNoId } from '../models/IMessage';
 
 const MessageForm = () => {
   const [selected, setSelected] = useState([]);
@@ -20,7 +20,7 @@ const MessageForm = () => {
   const [selectedUser, setSelectedUser] = useState<IUser>();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
-  const { socket, users, uid } = useContext(SocketContext).SocketState;
+  const { socket, users } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
     const fetchData = async () => {

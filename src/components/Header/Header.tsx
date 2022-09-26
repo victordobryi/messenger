@@ -11,7 +11,7 @@ const Header = () => {
   const { isAuth, user } = useAppSelector((state) => state.auth);
 
   const logout = async () => {
-    await dispatch(userLogout(String(user.id)));
+    await dispatch(userLogout(user.id));
     navigate('/main');
   };
 
