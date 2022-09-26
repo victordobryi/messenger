@@ -56,7 +56,11 @@ export const userLogin =
     }
   };
 
-export const userLogout = () => async (dispatch: AppDispatch) => {
+export const userLogout = (id: number) => async (dispatch: AppDispatch) => {
+  const user = (await UserService.getUser(id)).data;
+  const newUser = (await UserService.updateUser({ ...user, online: false }, id))
+    .data;
+  console.log(newUser);
   dispatch(authSlice.actions.setUser({} as IUser));
   dispatch(authSlice.actions.setAuth(false));
   dispatch(authSlice.actions.setError(''));

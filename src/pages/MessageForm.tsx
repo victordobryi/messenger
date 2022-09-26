@@ -32,7 +32,7 @@ const MessageForm = () => {
       setUsersNames(userNames);
     };
     fetchData();
-  }, []);
+  }, [users]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -7,7 +7,7 @@ export default class UserService {
   static async getUsers(): Promise<AxiosResponse<IUser[]>> {
     return axios.get<IUser[]>(URL);
   }
-  static async getUser(id: string): Promise<AxiosResponse<IUser>> {
+  static async getUser(id: number): Promise<AxiosResponse<IUser>> {
     return axios.get<IUser>(URL + id);
   }
   static async updateUser(

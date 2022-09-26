@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import MessageService from '../API/MessageService';
 import { IMessage } from '../models/IMessage';
 import { useAppSelector } from '../redux-hooks';
+import SocketContext from '../context/SocketContext';
 
 const Messages = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [allMessages, setAllMessages] = useState<IMessage[]>([]);
+  const { socket, users, uid, messages } =
+    useContext(SocketContext).SocketState;
 
   useEffect(() => {
     const getMessages = async () => {
@@ -18,7 +21,7 @@ const Messages = () => {
       setAllMessages(messageToCurrentuser);
     };
     getMessages();
-  }, []);
+  }, [messages]);
 
   return (
     <Accordion>
@@ -47,6 +50,16 @@ const Messages = () => {
 const Span = styled.button`
   margin-right: 10px;
   background: transparent;
+  opacity: 0;
+  animation: ani 2.5s forwards;
+  @keyframes ani {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 `;
 
 export default Messages;
