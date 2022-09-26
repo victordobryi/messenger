@@ -4,17 +4,21 @@ import { Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import UserService from '../API/UserService';
-import { IUser } from '../models/IUser';
 import { useNavigate } from 'react-router-dom';
+import MessageService from '../API/MessageService';
+import { IUser } from '../models/IUser';
+import { useAppSelector } from '../redux-hooks';
+import { getCurrentDate } from '../utils/getCurrentTime';
 
 const MessageForm = () => {
   const [selected, setSelected] = useState([]);
   const [usersNames, setUsersNames] = useState<string[]>([]);
-  const [users, setUsers] = useState<IUser[]>([]);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-
+  const [selectedUser, setSelectedUser] = useState<IUser>();
   const navigate = useNavigate();
+
+  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,16 +28,36 @@ const MessageForm = () => {
         userNames.push(user.username);
       });
       setUsersNames(userNames);
-      setUsers(users);
     };
     fetchData();
   }, []);
 
-  const sendMessage = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const users = (await UserService.getUsers()).data;
+      const selectedUserName = selected[0];
+      const currentUser = users.find(
+        (user) => user.username === selectedUserName
+      );
+      if (currentUser) {
+        setSelectedUser(currentUser);
+      }
+    };
+    fetchData();
+  }, [selected]);
+
+  const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(selected);
-    console.log(title);
-    console.log(message);
+    if (selectedUser) {
+      await MessageService.addMessage({
+        title,
+        message,
+        fromUserId: user.id,
+        toUserId: selectedUser.id,
+        currentDate: getCurrentDate(),
+        fromUserName: user.username
+      });
+    }
     navigate(`/messages/${selected}`);
   };
 
