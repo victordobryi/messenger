@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { IMessage, IMessageNoId } from '../models/IMessage';
 
-const URL = 'https://messenger-viktar.herokuapp.com/messages/';
+export const URL = 'https://messenger-viktar.herokuapp.com/messages/';
 
 export default class MessageService {
   static async getMessages(): Promise<AxiosResponse<IMessage[]>> {

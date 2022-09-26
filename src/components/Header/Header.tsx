@@ -8,10 +8,10 @@ import { userLogout } from '../../store/reducers/auth/ActionCreator';
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuth } = useAppSelector((state) => state.auth);
+  const { isAuth, user } = useAppSelector((state) => state.auth);
 
   const logout = async () => {
-    await dispatch(userLogout());
+    await dispatch(userLogout(user.id));
     navigate('/main');
   };
 

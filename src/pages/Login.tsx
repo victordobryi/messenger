@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
@@ -6,15 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux-hooks';
 import { userLogin } from '../store/reducers/auth/ActionCreator';
 import { Spinner } from 'react-bootstrap';
+import SocketContext from '../context/SocketContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { socket } = useContext(SocketContext).SocketState;
 
   const login = async (username: string) => {
-    await dispatch(userLogin(username));
+    if (socket) {
+      await dispatch(userLogin(username, socket));
+    }
     navigate('/messageForm');
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -9,6 +9,8 @@ import MessageService from '../API/MessageService';
 import { IUser } from '../models/IUser';
 import { useAppSelector } from '../redux-hooks';
 import { getCurrentDate } from '../utils/getCurrentTime';
+import SocketContext from '../context/SocketContext';
+import { IMessageNoId } from '../models/IMessage';
 
 const MessageForm = () => {
   const [selected, setSelected] = useState([]);
@@ -17,8 +19,8 @@ const MessageForm = () => {
   const [message, setMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState<IUser>();
   const navigate = useNavigate();
-
   const { user } = useAppSelector((state) => state.auth);
+  const { socket, users } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +32,7 @@ const MessageForm = () => {
       setUsersNames(userNames);
     };
     fetchData();
-  }, []);
+  }, [users]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,14 +51,16 @@ const MessageForm = () => {
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedUser) {
-      await MessageService.addMessage({
+      const msg: IMessageNoId = {
         title,
         message,
         fromUserId: user.id,
         toUserId: selectedUser.id,
         currentDate: getCurrentDate(),
         fromUserName: user.username
-      });
+      };
+      await MessageService.addMessage(msg);
+      socket?.emit('add_NewMessage', JSON.stringify(msg));
     }
     navigate(`/messages/${selected}`);
   };
